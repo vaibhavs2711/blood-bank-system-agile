@@ -1,0 +1,1 @@
+<footer class="site-footer"><div class="footer-inner"><div><strong>LifeLine Blood Network</strong><br>Connecting willing donors with people who need help.</div><div>For emergencies, contact your local emergency services or hospital.</div><div>© <?= date('Y') ?> LifeLine. Every donation matters.</div></div></footer>
