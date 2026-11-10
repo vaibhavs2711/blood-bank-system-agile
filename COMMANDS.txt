@@ -1,0 +1,56 @@
+========================================================================
+BLOOD BANK & DONATION MANAGEMENT SYSTEM - COMMANDS & INSTRUCTIONS
+========================================================================
+
+------------------------------------------------------------------------
+1. HOW TO RUN THE WEB APPLICATION
+------------------------------------------------------------------------
+Option A: Double-click 'start_server.bat' in this folder.
+Option B: Run from PowerShell / Command Prompt:
+   php -S localhost:8000
+
+Then open your browser at:
+   http://localhost:8000/
+   or
+   http://localhost:8000/admin/ (for Admin Panel)
+   Default Admin Login:
+   Username: varunsardana004
+   Password: 123
+
+
+------------------------------------------------------------------------
+2. HOW TO SET UP THE MYSQL DATABASE
+------------------------------------------------------------------------
+Step 1: Import the SQL schema and seed data into MySQL:
+   "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p < "sql\blood_bank_database.sql"
+   (Enter your MySQL root password when prompted)
+
+Step 2: Update database credentials if your MySQL root has a password:
+   Edit line 2 in 'conn.php' and 'admin/conn.php':
+   Change:
+      $conn=mysqli_connect("localhost","root","","blood_donation");
+   To:
+      $conn=mysqli_connect("localhost","root","YOUR_PASSWORD","blood_donation");
+
+
+------------------------------------------------------------------------
+3. GIT COMMANDS (TO SAVE & PUSH CHANGES TO GITHUB)
+------------------------------------------------------------------------
+To check repository status:
+   git status
+
+To stage all modified and new files:
+   git add .
+
+To commit your changes:
+   git commit -m "Your commit message here"
+
+To push commits to GitHub:
+   git push origin main
+
+To pull any remote changes:
+   git pull origin main
+
+Repository URL:
+   https://github.com/vaibhavs2711/blood-bank-management-system
+========================================================================
