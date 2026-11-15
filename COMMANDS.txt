@@ -1,0 +1,86 @@
+========================================================================
+BLOOD BANK & DONATION MANAGEMENT SYSTEM - COMMANDS & INSTRUCTIONS
+========================================================================
+
+------------------------------------------------------------------------
+1. HOW TO RUN THE WEB APPLICATION
+------------------------------------------------------------------------
+Option A: Double-click 'start_server.bat' in this folder.
+Option B: Run from PowerShell / Command Prompt:
+   php -S localhost:8000
+
+Then open your browser at:
+   http://localhost:8000/
+   or
+   http://localhost:8000/admin/ (for Admin Panel)
+   Default Admin Login:
+   Username: varunsardana004
+   Password: 123
+
+
+------------------------------------------------------------------------
+2. HOW TO SET UP THE MYSQL DATABASE
+------------------------------------------------------------------------
+Step 1: Import the SQL schema and seed data into MySQL:
+   "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p < "sql\blood_bank_database.sql"
+   (Enter your MySQL root password when prompted)
+
+Step 2: Update database credentials if your MySQL root has a password:
+   Edit line 2 in 'conn.php' and 'admin/conn.php':
+   Change:
+      $conn=mysqli_connect("localhost","root","","blood_donation");
+   To:
+      $conn=mysqli_connect("localhost","root","YOUR_PASSWORD","blood_donation");
+
+
+------------------------------------------------------------------------
+3. GIT COMMANDS (TO SAVE & INITIALIZE REPO WITH GITHUB)
+------------------------------------------------------------------------
+To link your local repository to your GitHub repository (run once):
+   git remote add origin https://github.com/vaibhavs2711/blood-bank-management-system.git
+   git branch -M main
+   git push -u origin main
+
+To check repository status:
+   git status
+
+To stage all modified and new files:
+   git add .
+
+To commit your changes:
+   git commit -m "Your commit message here"
+
+To push commits to GitHub:
+   git push origin main
+
+To pull any remote changes:
+   git pull origin main
+
+Repository URL:
+   https://github.com/vaibhavs2711/blood-bank-management-system
+
+
+------------------------------------------------------------------------
+4. AUTOMATED DAILY SPRINT COMMITS (HOW TO RUN ON SERVER)
+------------------------------------------------------------------------
+METHOD 1 (EASIEST & RECOMMENDED): GitHub Actions Cloud Server (24/7 Free)
+- No physical server required! GitHub runs this automatically every day.
+- Workflow file: .github/workflows/daily_agile_sprint.yml
+- Triggered automatically every day at 10:00 AM IST (04:30 UTC).
+- You can also trigger it manually anytime from GitHub:
+  Go to your repo -> "Actions" tab -> "Daily Agile Sprint Automation" -> "Run workflow".
+
+METHOD 2: On a Dedicated Linux Server / VPS / Raspberry Pi
+- Step 1: Clone repo to your server:
+    git clone https://github.com/vaibhavs2711/blood-bank-management-system.git
+- Step 2: Open cron configuration:
+    crontab -e
+- Step 3: Add this line to run daily at 10:00 AM:
+    0 10 * * * cd /path/to/blood-bank-management-system && ./cron_daily_pusher.sh
+
+METHOD 3: On Windows Server / Local PC (Task Scheduler)
+- Open PowerShell as Administrator and run:
+    $action = New-ScheduledTaskAction -Execute "D:\Personal Data\Sem 7\Agile\blood-bank-system-agile\cron_daily_pusher.bat"
+    $trigger = New-ScheduledTaskTrigger -Daily -At 10am
+    Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "AgileDailySprintPusher" -Description "Daily Git Pusher"
+========================================================================

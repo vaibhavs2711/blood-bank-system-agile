@@ -1,0 +1,35 @@
+name: Daily Agile Sprint Automation
+
+on:
+  schedule:
+    # Runs everyday at 04:30 UTC (10:00 AM IST)
+    - cron: '30 4 * * *'
+  # Allows you to manually trigger the workflow anytime from the GitHub Actions tab
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  daily-agile-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure Git Author
+        run: |
+          git config --global user.name "vaibhavs2711"
+          git config --global user.email "vaibhavsuthar2711@gmail.com"
+
+      - name: Run Daily Agile Sprint Script
+        run: |
+          python cron_daily_pusher.py
