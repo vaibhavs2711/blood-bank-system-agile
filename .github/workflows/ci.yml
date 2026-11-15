@@ -48,7 +48,7 @@ jobs:
       - name: Import Database Schema & Seed Data
         run: |
           echo "Importing SQL schema into MySQL..."
-          mysql -h 127.0.0.1 -P 3306 -u root -proot blood_donation < sql/blood_bank_database.sql
+          mysql -h 127.0.0.1 -P 3306 -u root -proot --force < sql/blood_bank_database.sql
 
       - name: Verify Schema Tables & Constraints
         run: |
