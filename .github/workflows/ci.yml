@@ -1,0 +1,84 @@
+name: CI/CD Agile Build & Test Pipeline
+
+on:
+  push:
+    branches: [ main, 'feature/*', 'release/*' ]
+  pull_request:
+    branches: [ main, 'release/*' ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  php-syntax-and-linting:
+    name: 1. PHP Syntax & Linting Sanity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mysqli, pdo_mysql, mbstring
+
+      - name: Lint PHP Syntax Across All Modules
+        run: |
+          echo "Linting all PHP files for syntax correctness..."
+          find . -maxdepth 3 -name "*.php" -exec php -l {} +
+
+  database-schema-validation:
+    name: 2. MySQL Schema & Table Integrity
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: blood_donation
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Import Database Schema & Seed Data
+        run: |
+          echo "Importing SQL schema into MySQL..."
+          mysql -h 127.0.0.1 -P 3306 -u root -proot blood_donation < sql/blood_bank_database.sql
+
+      - name: Verify Schema Tables & Constraints
+        run: |
+          echo "Verifying tables in blood_donation database..."
+          mysql -h 127.0.0.1 -P 3306 -u root -proot blood_donation -e "SHOW TABLES;"
+          echo "Verifying seeded blood groups..."
+          mysql -h 127.0.0.1 -P 3306 -u root -proot blood_donation -e "SELECT * FROM blood;"
+
+  automated-healthcheck-tests:
+    name: 3. Agile Healthcheck & Security Sanitization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python Runtime
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Sprint Healthcheck & Security Verifications
+        run: |
+          echo "Running Agile Sprint Healthcheck..."
+          python -c "
+          import os, re
+          # Verify helpers.php exists and contains e() sanitizer
+          with open('helpers.php', 'r', encoding='utf-8') as f:
+              content = f.read()
+          assert 'function e(' in content, 'Sanitization helper e() missing!'
+          assert 'htmlspecialchars' in content, 'htmlspecialchars missing in e()!'
+          assert 'function blood_groups(' in content, 'blood_groups helper missing!'
+          print('Security helpers verified successfully!')
+          "
